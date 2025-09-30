@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisdom - Learn Smarter, Grow Faster</title>
+    
+    <!-- Cleaned up CDN imports -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Basic reset to ensure content displays */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: #FBFFFE;
+            color: #000814;
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .practice-card:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #A3B18A;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #00477A 0%, #A3B18A 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .chatbot-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00477A 0%, #A3B18A 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .chatbot-window {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, #00477A 0%, #A3B18A 100%);
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+        }
+
+        .bot-message {
+            background: #f1f5f9;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #00477A 0%, #A3B18A 100%);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chatbot-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .chatbot-input button {
+            background: linear-gradient(135deg, #00477A 0%, #A3B18A 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0 15px 15px;
+        }
+
+        .quick-option {
+            background: #f1f5f9;
+            border: none;
+            border-radius: 16px;
+            padding: 8px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quick-option:hover {
+            background: #e2e8f0;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background: #f1f5f9;
+            border-radius: 18px;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            width: fit-content;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #94a3b8;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="bg-[#000814] text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-[#00477A] to-[#A3B18A] rounded-xl flex items-center justify-center shadow-md">
+                        <i class="fas fa-graduation-cap text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-2xl font-bold">Wisdom</span>
+                        <p class="text-xs text-[#B3CDE0]">Learn Smarter, Grow Faster</p>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="hidden lg:flex space-x-8">
+                    <a href="#courses" class="nav-link hover:text-[#A3B18A] transition-colors">Courses</a>
+                    <a href="#live" class="nav-link hover:text-[#A3B18A] transition-colors">Live Classes</a>
+                    <a href="#practice" class="nav-link hover:text-[#A3B18A] transition-colors">Practice</a>
+                    <a href="#mentors" class="nav-link hover:text-[#A3B18A] transition-colors">Mentors</a>
+                    <a href="#success" class="nav-link hover:text-[#A3B18A] transition-colors">Success Stories</a>
+                </nav>
+
+                <!-- Search and Auth -->
+                <div class="flex items-center space-x-4">
+                    <div class="relative hidden md:block">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" placeholder="Search courses..."
+                            class="bg-[#00477A] text-white pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A3B18A] w-64" />
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <button class="bg-[#B3CDE0] text-[#000814] px-4 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition-colors flex items-center">
+                            <i class="fas fa-sign-in-alt mr-2"></i> <a href="login.html"> Sign In</a>
+                        </button>
+                        <button class="bg-gradient-to-r from-[#00477A] to-[#A3B18A] text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center">
+                            <i class="fas fa-user-plus mr-2"></i> <a href="register.html">Sign Up</a>
+                        </button>
+                    </div>
+
+                    <!-- Mobile menu button -->
+                    <button class="lg:hidden text-xl" id="mobileMenuButton">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile menu -->
+            <div class="lg:hidden mt-4 pb-4 border-t border-gray-700 pt-4 hidden" id="mobileMenu">
+                <div class="flex flex-col space-y-4">
+                    <a href="#courses" class="hover:text-[#A3B18A] transition-colors">Courses</a>
+                    <a href="#live" class="hover:text-[#A3B18A] transition-colors">Live Classes</a>
+                    <a href="#practice" class="hover:text-[#A3B18A] transition-colors">Practice</a>
+                    <a href="#mentors" class="hover:text-[#A3B18A] transition-colors">Mentors</a>
+                    <a href="#success" class="hover:text-[#A3B18A] transition-colors">Success Stories</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-r from-[#00477A] to-[#B3CDE0] text-white py-20 overflow-hidden">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute -top-24 -right-24 w-96 h-96 bg-[#A3B18A] rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+            <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-[#00477A] rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+        </div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center">
+                <div class="lg:w-1/2 mb-10 lg:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                        Unlock Your Potential with <span class="gradient-text">Wisdom</span>
+                    </h1>
+                    <p class="text-xl mb-8 max-w-2xl">
+                        Master in-demand skills with industry experts. Our project-based learning approach will prepare you for the tech jobs of tomorrow.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button class="bg-[#A3B18A] text-[#000814] px-8 py-4 rounded-lg font-bold text-lg hover:bg-opacity-90 transition-colors flex items-center justify-center">
+                            <i class="fas fa-play-circle mr-2"></i> Explore Programs
+                        </button>
+                        <button class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-[#00477A] transition-colors flex items-center justify-center">
+                            <i class="fas fa-calendar-alt mr-2"></i> Free Trial Class
+                        </button>
+                    </div>
+                    <div class="mt-8 flex items-center space-x-6 text-sm">
+                        <div class="flex items-center">
+                            <i class="fas fa-star text-yellow-400 mr-1"></i>
+                            <span>4.9/5 Rating</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-users mr-1"></i>
+                            <span>50,000+ Students</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-briefcase mr-1"></i>
+                            <span>85% Placement Rate</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 flex justify-center">
+                    <div class="relative">
+                        <div class="w-80 h-80 bg-gradient-to-br from-[#A3B18A] to-[#B3CDE0] rounded-full flex items-center justify-center floating">
+                            <div class="w-64 h-64 bg-gradient-to-br from-[#00477A] to-[#000814] rounded-full flex items-center justify-center">
+                                <i class="fas fa-lightbulb text-6xl text-[#A3B18A]"></i>
+                            </div>
+                        </div>
+                        <div class="absolute -top-4 -right-4 bg-white text-[#00477A] p-4 rounded-xl shadow-lg">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">100+</div>
+                                <div class="text-sm">Courses</div>
+                            </div>
+                        </div>
+                        <div class="absolute -bottom-4 -left-4 bg-white text-[#00477A] p-4 rounded-xl shadow-lg">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">10+</div>
+                                <div class="text-sm">Expert Mentors</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trusted By Section -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h3 class="text-center text-gray-600 mb-8">Trusted by learners from top companies</h3>
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-70">
+                <div class="text-xl font-semibold text-gray-700 bg-white p-3 rounded-lg shadow-sm">Google</div>
+                <div class="text-xl font-semibold text-gray-700 bg-white p-3 rounded-lg shadow-sm">Microsoft</div>
+                <div class="text-xl font-semibold text-gray-700 bg-white p-3 rounded-lg shadow-sm">Amazon</div>
+                <div class="text-xl font-semibold text-gray-700 bg-white p-3 rounded-lg shadow-sm">Infosys</div>
+                <div class="text-xl font-semibold text-gray-700 bg-white p-3 rounded-lg shadow-sm">TCS</div>
+                <div class="text-xl font-semibold text-gray-700 bg-white p-3 rounded-lg shadow-sm">Wipro</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-[#000814] mb-4">
+                Why Learn with Wisdom?
+            </h2>
+            <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">
+                We provide a complete learning ecosystem designed to help you succeed in your tech career journey.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100">
+                    <div class="w-16 h-16 bg-gradient-to-br from-[#00477A] to-[#B3CDE0] rounded-full flex items-center justify-center text-white mx-auto mb-4">
+                        <i class="fas fa-chalkboard-teacher text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-[#000814] mb-2">
+                        Live Interactive Classes
+                    </h3>
+                    <p class="text-gray-600">
+                        Learn from industry experts with real-time doubt solving and interactive sessions.
+                    </p>
+                </div>
+                <div class="text-center p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100">
+                    <div class="w-16 h-16 bg-gradient-to-br from-[#A3B18A] to-[#B3CDE0] rounded-full flex items-center justify-center text-white mx-auto mb-4">
+                        <i class="fas fa-laptop-code text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-[#000814] mb-2">
+                        Hands-on Practice
+                    </h3>
+                    <p class="text-gray-600">
+                        CodeKata, WebKata, and real-world projects to build your portfolio.
+                    </p>
+                </div>
+                <div class="text-center p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100">
+                    <div class="w-16 h-16 bg-gradient-to-br from-[#00477A] to-[#A3B18A] rounded-full flex items-center justify-center text-white mx-auto mb-4">
+                        <i class="fas fa-user-graduate text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-[#000814] mb-2">
+                        1:1 Mentor Support
+                    </h3>
+                    <p class="text-gray-600">
+                        Personalized guidance from experienced mentors throughout your learning journey.
+                    </p>
+                </div>
+                <div class="text-center p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100">
+                    <div class="w-16 h-16 bg-gradient-to-br from-[#A3B18A] to-[#00477A] rounded-full flex items-center justify-center text-white mx-auto mb-4">
+                        <i class="fas fa-award text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-[#000814] mb-2">
+                        Job Assistance
+                    </h3>
+                    <p class="text-gray-600">
+                        Resume building, mock interviews, and placement support to kickstart your career.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Courses -->
+    <section id="courses" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+                <div>
+                    <h2 class="text-3xl font-bold text-[#000814]">
+                        Featured Courses
+                    </h2>
+                    <p class="text-gray-600 mt-2">Handpicked courses to boost your career</p>
+                </div>
+                <button class="mt-4 md:mt-0 bg-gradient-to-r from-[#00477A] to-[#A3B18A] text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center">
+                    View All Courses <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Course Card 1 -->
+                <div class="course-card bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                    <div class="h-48 bg-gradient-to-br from-[#00477A] to-[#B3CDE0] relative p-4 text-white flex flex-col justify-end">
+                        <div class="absolute top-4 right-4 bg-[#A3B18A] text-white px-3 py-1 rounded-md text-sm font-semibold">
+                            <i class="fas fa-fire mr-1"></i> Popular
+                        </div>
+                        <h3 class="text-xl font-bold z-10">Full Stack Web Development</h3>
+                        <div class="flex items-center mt-2 text-sm">
+                            <div class="flex items-center mr-4">
+                                <i class="far fa-clock mr-1"></i>
+                                <span>6 months</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-signal mr-1"></i>
+                                <span>Beginner</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 mb-4">
+                            Master the MERN stack with hands-on projects and build a portfolio that gets you hired.
+                        </p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-1">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="text-sm text-gray-600 ml-1">
+                                    (289 reviews)
+                                </span>
+                            </div>
+                            <span class="text-lg font-bold text-[#00477A]">
+                                ₹14,999
+                            </span>
+                        </div>
+                        <button class="w-full bg-[#00477A] text-white py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors flex items-center justify-center">
+                            <i class="fas fa-shopping-cart mr-2"></i> Enroll Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Course Card 2 -->
+                <div class="course-card bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                    <div class="h-48 bg-gradient-to-br from-[#A3B18A] to-[#B3CDE0] relative p-4 text-white flex flex-col justify-end">
+                        <div class="absolute top-4 right-4 bg-[#00477A] text-white px-3 py-1 rounded-md text-sm font-semibold">
+                            <i class="fas fa-chart-line mr-1"></i> Trending
+                        </div>
+                        <h3 class="text-xl font-bold z-10">Data Science & Machine Learning</h3>
+                        <div class="flex items-center mt-2 text-sm">
+                            <div class="flex items-center mr-4">
+                                <i class="far fa-clock mr-1"></i>
+                                <span>8 months</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-signal mr-1"></i>
+                                <span>Intermediate</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 mb-4">
+                            Master Python, ML algorithms, and data visualization for a career in data science.
+                        </p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-1">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-sm text-gray-600 ml-1">
+                                    (156 reviews)
+                                </span>
+                            </div>
+                            <span class="text-lg font-bold text-[#00477A]">
+                                ₹19,999
+                            </span>
+                        </div>
+                        <button class="w-full bg-[#00477A] text-white py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors flex items-center justify-center">
+                            <i class="fas fa-shopping-cart mr-2"></i> Enroll Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Course Card 3 -->
+                <div class="course-card bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                    <div class="h-48 bg-gradient-to-br from-[#00477A] to-[#A3B18A] relative p-4 text-white flex flex-col justify-end">
+                        <div class="absolute top-4 right-4 bg-[#B3CDE0] text-[#000814] px-3 py-1 rounded-md text-sm font-semibold">
+                            <i class="fas fa-rocket mr-1"></i> New
+                        </div>
+                        <h3 class="text-xl font-bold z-10">Mobile App Development</h3>
+                        <div class="flex items-center mt-2 text-sm">
+                            <div class="flex items-center mr-4">
+                                <i class="far fa-clock mr-1"></i>
+                                <span>4 months</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-signal mr-1"></i>
+                                <span>Intermediate</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 mb-4">
+                            Build cross-platform mobile apps with React Native and Flutter for iOS and Android.
+                        </p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-1">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <span class="text-sm text-gray-600 ml-1">
+                                    (98 reviews)
+                                </span>
+                            </div>
+                            <span class="text-lg font-bold text-[#00477A]">
+                                ₹12,999
+                            </span>
+                        </div>
+                        <button class="w-full bg-[#00477A] text-white py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors flex items-center justify-center">
+                            <i class="fas fa-shopping-cart mr-2"></i> Enroll Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Practice Section -->
+    <section id="practice" class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-[#000814] mb-4">
+                Sharpen Your Skills
+            </h2>
+            <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">
+                Our practice platforms help you build confidence through hands-on coding challenges and real-world projects.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="practice-card bg-gradient-to-br from-[#00477A] to-[#B3CDE0] text-white rounded-xl p-8 text-center cursor-pointer relative overflow-hidden">
+                    <div class="absolute -right-8 -top-8 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+                    <div class="absolute -left-8 -bottom-8 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+                    <i class="fas fa-code text-5xl mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-4">CodeKata</h3>
+                    <p class="text-lg opacity-90 mb-6">Master programming fundamentals with 1000+ coding problems</p>
+                    <button class="bg-white text-[#00477A] px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors">
+                        Start Practicing
+                    </button>
+                </div>
+                <div class="practice-card bg-gradient-to-br from-[#A3B18A] to-[#B3CDE0] text-white rounded-xl p-8 text-center cursor-pointer relative overflow-hidden">
+                    <div class="absolute -right-8 -top-8 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+                    <div class="absolute -left-8 -bottom-8 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+                    <i class="fas fa-laptop-code text-5xl mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-4">WebKata</h3>
+                    <p class="text-lg opacity-90 mb-6">Build real web development projects and deploy them</p>
+                    <button class="bg-white text-[#A3B18A] px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors">
+                        Start Practicing
+                    </button>
+                </div>
+                <div class="practice-card bg-gradient-to-br from-[#00477A] to-[#A3B18A] text-white rounded-xl p-8 text-center cursor-pointer relative overflow-hidden">
+                    <div class="absolute -right-8 -top-8 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+                    <div class="absolute -left-8 -bottom-8 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+                    <i class="fas fa-database text-5xl mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-4">SQLKata</h3>
+                    <p class="text-lg opacity-90 mb-6">Practice database queries and optimization techniques</p>
+                    <button class="bg-white text-[#00477A] px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors">
+                        Start Practicing
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#000814] text-[#FBFFFE] py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-[#00477A] to-[#A3B18A] rounded-lg flex items-center justify-center">
+                            <i class="fas fa-graduation-cap text-white"></i>
+                        </div>
+                        <div>
+                            <span class="text-xl font-bold">Wisdom</span>
+                            <p class="text-xs text-[#B3CDE0]">Learn Smarter, Grow Faster</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        Empowering learners with industry-relevant tech education and hands-on practice.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-[#A3B18A] transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-[#A3B18A] transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-[#A3B18A] transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-[#A3B18A] transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#courses" class="hover:text-[#A3B18A] transition-colors">Courses</a></li>
+                        <li><a href="#live" class="hover:text-[#A3B18A] transition-colors">Live Classes</a></li>
+                        <li><a href="#practice" class="hover:text-[#A3B18A] transition-colors">Practice</a></li>
+                        <li><a href="#mentors" class="hover:text-[#A3B18A] transition-colors">Mentors</a></li>
+                        <li><a href="#success" class="hover:text-[#A3B18A] transition-colors">Success Stories</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Support</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-[#A3B18A] transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-[#A3B18A] transition-colors">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-[#A3B18A] transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-[#A3B18A] transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-[#A3B18A] transition-colors">Refund Policy</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <div class="space-y-3 text-gray-400">
+                        <p class="flex items-center">
+                            <i class="fas fa-envelope mr-3 text-[#A3B18A]"></i>
+                            support@wisdom.com
+                        </p>
+                        <p class="flex items-center">
+                            <i class="fas fa-phone mr-3 text-[#A3B18A]"></i>
+                            +91 98765 43210
+                        </p>
+                        <p class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-3 text-[#A3B18A]"></i>
+                            Tech Park, Bangalore, India
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 Wisdom EdTech. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chatbot -->
+    <div class="chatbot-container">
+        <div class="chatbot-button" id="chatbotButton">
+            <i class="fas fa-robot text-xl"></i>
+        </div>
+
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center mr-2">
+                        <i class="fas fa-robot text-[#00477A]"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">Wisdom Assistant</h3>
+                        <p class="text-xs opacity-80">Online</p>
+                    </div>
+                </div>
+                <button id="closeChatbot" class="text-white opacity-80 hover:opacity-100">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="message bot-message">
+                    Hi there! 👋 I'm your Wisdom assistant. How can I help you today?
+                </div>
+                <div class="message bot-message">
+                    You can ask me about courses, pricing, mentors, or anything else about Wisdom!
+                </div>
+            </div>
+
+            <div class="quick-options" id="quickOptions">
+                <button class="quick-option" data-query="courses">Browse Courses</button>
+                <button class="quick-option" data-query="pricing">Course Pricing</button>
+                <button class="quick-option" data-query="mentors">Meet Our Mentors</button>
+                <button class="quick-option" data-query="signup">How to Sign Up</button>
+            </div>
+
+            <div class="chatbot-input">
+                <input type="text" id="chatbotInput" placeholder="Type your message...">
+                <button id="sendMessage">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobileMenuButton').addEventListener('click', function () {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Chatbot functionality
+        const chatbotButton = document.getElementById('chatbotButton');
+        const chatbotWindow = document.getElementById('chatbotWindow');
+        const closeChatbot = document.getElementById('closeChatbot');
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const sendMessage = document.getElementById('sendMessage');
+        const quickOptions = document.getElementById('quickOptions');
+
+        // Toggle chatbot window
+        chatbotButton.addEventListener('click', () => {
+            chatbotWindow.style.display = 'flex';
+        });
+
+        closeChatbot.addEventListener('click', () => {
+            chatbotWindow.style.display = 'none';
+        });
+
+        // Send message function
+        function sendUserMessage(message) {
+            // Add user message
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user-message';
+            userMessage.textContent = message;
+            chatbotMessages.appendChild(userMessage);
+
+            // Clear input
+            chatbotInput.value = '';
+
+            // Scroll to bottom
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+            // Show typing indicator
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            chatbotMessages.appendChild(typingIndicator);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+            // Simulate bot response after delay
+            setTimeout(() => {
+                typingIndicator.remove();
+                const botResponse = getBotResponse(message);
+                const botMessage = document.createElement('div');
+                botMessage.className = 'message bot-message';
+                botMessage.textContent = botResponse;
+                chatbotMessages.appendChild(botMessage);
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            }, 1500);
+        }
+
+        // Send message on button click
+        sendMessage.addEventListener('click', () => {
+            const message = chatbotInput.value.trim();
+            if (message) {
+                sendUserMessage(message);
+            }
+        });
+
+        // Send message on Enter key
+        chatbotInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const message = chatbotInput.value.trim();
+                if (message) {
+                    sendUserMessage(message);
+                }
+            }
+        });
+
+        // Quick options
+        quickOptions.querySelectorAll('.quick-option').forEach(option => {
+            option.addEventListener('click', () => {
+                sendUserMessage(option.textContent);
+            });
+        });
+
+        // Bot response logic
+        function getBotResponse(message) {
+            const lowerMessage = message.toLowerCase();
+
+            if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+                return "Hello! I'm the Wisdom assistant. How can I help you with your learning journey today?";
+            } else if (lowerMessage.includes('course') || lowerMessage.includes('program')) {
+                return "We offer a variety of courses in tech fields like Full Stack Development, Data Science, Mobile App Development, and more. Our courses range from beginner to advanced levels.";
+            } else if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('fee')) {
+                return "Our course prices range from ₹12,999 to ₹19,999 depending on the program. We also offer installment plans and scholarships for eligible students.";
+            } else if (lowerMessage.includes('mentor') || lowerMessage.includes('instructor') || lowerMessage.includes('teacher')) {
+                return "Our mentors are industry experts from companies like Google, Amazon, and Microsoft. They provide 1:1 guidance and real-world insights throughout your learning journey.";
+            } else if (lowerMessage.includes('sign up') || lowerMessage.includes('register') || lowerMessage.includes('enroll')) {
+                return "You can sign up by clicking the 'Sign Up' button in the top right corner. After registration, you can browse courses and enroll in your preferred program.";
+            } else if (lowerMessage.includes('practice') || lowerMessage.includes('codekata') || lowerMessage.includes('webkata')) {
+                return "We have three practice platforms: CodeKata for programming fundamentals, WebKata for web development projects, and SQLKata for database queries. All are included with course enrollment.";
+            } else if (lowerMessage.includes('live') || lowerMessage.includes('class') || lowerMessage.includes('session')) {
+                return "We offer live interactive classes with industry experts. You can ask questions in real-time and get immediate feedback. Check our 'Live Classes' section for the schedule.";
+            } else if (lowerMessage.includes('job') || lowerMessage.includes('career') || lowerMessage.includes('placement')) {
+                return "We provide complete job assistance including resume building, mock interviews, and placement support. Our placement rate is 85% with students getting jobs at top companies.";
+            } else if (lowerMessage.includes('contact') || lowerMessage.includes('support') || lowerMessage.includes('help')) {
+                return "You can contact our support team at support@wisdom.com or call +91 98765 43210. We're available 9 AM - 6 PM, Monday to Saturday.";
+            } else if (lowerMessage.includes('thank')) {
+                return "You're welcome! Is there anything else I can help you with?";
+            } else {
+                return "I'm here to help you learn more about Wisdom! You can ask me about courses, pricing, mentors, practice platforms, or anything else about our learning platform.";
+            }
+        }
+    </script>
+</body>
+</html>
