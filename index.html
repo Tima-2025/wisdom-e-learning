@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillUp - Unlock Your Potential</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="components.css">
+    <link rel="stylesheet" href="responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <h2 class="logo">SkillUp</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Browse</a></li>
+                <li><a href="#">For Business</a></li>
+                <li><a href="#">Teach</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="btn-signup">Sign Up</button>
+                <button class="btn-login">Login</button>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Unlock Your Potential with <span class="brand-name">SkillUp</span></h1>
+            <p>Learn from industry experts and gain in-demand skills. Start your journey today and transform your career.</p>
+            <div class="hero-actions">
+                <button class="btn-primary">Get Started for Free</button>
+                <button class="btn-secondary">Explore Courses</button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="floating-card card-1">
+                <i class="fas fa-laptop-code"></i>
+                <h4>Web Development</h4>
+                <p>50+ Courses</p>
+            </div>
+            <div class="floating-card card-2">
+                <i class="fas fa-chart-line"></i>
+                <h4>Data Science</h4>
+                <p>30+ Courses</p>
+            </div>
+            <div class="floating-card card-3">
+                <i class="fas fa-palette"></i>
+                <h4>Design</h4>
+                <p>25+ Courses</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2>Why Choose SkillUp?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-user-tie"></i>
+                    <h3>Industry Experts</h3>
+                    <p>Learn from professionals with real-world experience</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>Career Focused</h3>
+                    <p>Courses designed to get you job-ready</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>Flexible Learning</h3>
+                    <p>Learn at your own pace, anytime anywhere</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-certificate"></i>
+                    <h3>Certification</h3>
+                    <p>Get recognized certificates for your skills</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Courses -->
+    <section class="popular-courses">
+        <div class="container">
+            <h2>Popular Courses</h2>
+            <div class="courses-grid" id="popularCourses">
+                <!-- Courses loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Start Your Learning Journey?</h2>
+            <p>Join thousands of students who have transformed their careers with SkillUp</p>
+            <button class="btn-primary large">Get Started Now</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-logo">SkillUp</h3>
+                    <p>Unlock your potential with industry-relevant skills and expert-led courses.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Browse Courses</a></li>
+                        <li><a href="#">For Business</a></li>
+                        <li><a href="#">Teach on SkillUp</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Newsletter</h4>
+                    <p>Subscribe to get updates on new courses</p>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="Enter your email">
+                        <button class="btn-primary">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SkillUp. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
